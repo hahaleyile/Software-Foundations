@@ -2,6 +2,7 @@
 
 (** 在开始之前，我们需要把上一章中所有的定义都导入进来： *)
 
+Add LoadPath "/home/black/software-foundations/lf" as LF.
 From LF Require Export Basics.
 
 (** For the [Require Export] to work, Coq needs to be able to
@@ -171,22 +172,38 @@ Proof.
 Theorem mult_0_r : forall n:nat,
   n * 0 = 0.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n.
+  induction n as [|n' IHn'].
+  - reflexivity.
+  - simpl. rewrite -> IHn'. reflexivity.
+Qed.
 
 Theorem plus_n_Sm : forall n m : nat,
   S (n + m) = n + (S m).
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m.
+  induction n as [|n' IHn'].
+  - simpl. reflexivity.
+  - simpl. rewrite -> IHn'. reflexivity.
+Qed.
 
 Theorem plus_comm : forall n m : nat,
   n + m = m + n.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m.
+  induction n as [|n' IHn'].
+  - simpl. rewrite <- plus_n_O. reflexivity.
+  - simpl. rewrite -> IHn'. rewrite -> plus_n_Sm. reflexivity.
+Qed.
 
 Theorem plus_assoc : forall n m p : nat,
   n + (m + p) = (n + m) + p.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m p.
+  induction n as [|n' IHn'].
+  - simpl. reflexivity.
+  - simpl. rewrite -> IHn'. reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：2 星, standard (double_plus) 
@@ -203,7 +220,13 @@ Fixpoint double (n:nat) :=
 
 Lemma double_plus : forall n, double n = n + n .
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n.
+  induction n as [|n' IHn'].
+  - reflexivity.
+  - simpl. rewrite <- plus_n_Sm. 
+    rewrite <- IHn'. 
+    reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：2 星, standard, optional (evenb_S) 
@@ -215,7 +238,14 @@ Proof.
 Theorem evenb_S : forall n : nat,
   evenb (S n) = negb (evenb n).
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n.
+  induction n as [|n' IHn'].
+  - simpl. reflexivity.
+  - rewrite -> IHn'. 
+    rewrite -> negb_involutive.
+    simpl.
+    reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：1 星, standard, optional (destruct_induction) 
@@ -409,7 +439,14 @@ Definition manual_grade_for_plus_comm_informal : option (nat*string) := None.
 Theorem plus_swap : forall n m p : nat,
   n + (m + p) = m + (n + p).
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m p.
+  rewrite -> plus_assoc.
+  assert (H: n+m = m+n).
+  { rewrite -> plus_comm. reflexivity. }
+  rewrite -> H.
+  rewrite -> plus_assoc.
+  reflexivity.
+Qed.
 
 (** 现在证明乘法交换律。（你在证明过程中可能想要定义并证明一个辅助定理。
     提示：[n * (1 + k)] 是什么？） *)
@@ -417,7 +454,22 @@ Proof.
 Theorem mult_comm : forall m n : nat,
   m * n = n * m.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m.
+  induction n as [|n' IHn'].
+  - rewrite -> mult_0_r. 
+    rewrite -> mult_0_l.
+    reflexivity.
+  - simpl.
+    assert (H: m* S n' = m*n' + m).
+    {
+      rewrite <- mult_n_Sm.
+      reflexivity.
+    }
+    rewrite -> H.
+    rewrite plus_comm.
+    rewrite -> IHn'.
+    reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：3 星, standard, optional (more_exercises) 
@@ -502,7 +554,14 @@ Proof.
 Theorem plus_swap' : forall n m p : nat,
   n + (m + p) = m + (n + p).
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros n m p.
+  rewrite -> plus_assoc.
+  replace (n+m) with (m+n).
+  rewrite -> plus_assoc.
+  reflexivity.
+  rewrite -> plus_comm.
+  reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：3 星, standard, recommended (binary_commute) 
