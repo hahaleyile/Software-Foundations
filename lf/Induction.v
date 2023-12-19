@@ -2,7 +2,6 @@
 
 (** 在开始之前，我们需要把上一章中所有的定义都导入进来： *)
 
-Add LoadPath "/home/black/software-foundations/lf" as LF.
 From LF Require Export Basics.
 
 (** For the [Require Export] to work, Coq needs to be able to
