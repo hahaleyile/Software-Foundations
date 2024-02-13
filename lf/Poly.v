@@ -132,6 +132,13 @@ Inductive grumble (X:Type) : Type :=
       - [e bool (b c 0)]
       - [c] *)
 (* 请在此处解答 *)
+Check (d (b a 5)).
+Check (d mumble (b a 5)).
+Check (d bool (b a 5)).
+Check (e bool true).
+Check (e mumble (b c 0)).
+Check (e bool (b c 0)).
+Check (c).
 End MumbleGrumble.
 
 (* 请勿修改下面这一行： *)
