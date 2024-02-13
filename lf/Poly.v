@@ -132,13 +132,13 @@ Inductive grumble (X:Type) : Type :=
       - [e bool (b c 0)]
       - [c] *)
 (* 请在此处解答 *)
-Check (d (b a 5)).
+(* Check (d (b a 5)).
 Check (d mumble (b a 5)).
 Check (d bool (b a 5)).
 Check (e bool true).
 Check (e mumble (b c 0)).
 Check (e bool (b c 0)).
-Check (c).
+Check (c). *)
 End MumbleGrumble.
 
 (* 请勿修改下面这一行： *)
@@ -346,18 +346,30 @@ Definition list123''' := [1; 2; 3].
 Theorem app_nil_r : forall (X:Type), forall l:list X,
   l ++ [] = l.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros.
+  induction l as [|X' l' IH].
+  - simpl. reflexivity.
+  - simpl. rewrite -> IH. reflexivity.
+Qed.
 
 Theorem app_assoc : forall A (l m n:list A),
   l ++ m ++ n = (l ++ m) ++ n.
 Proof.
-  (* 请在此处解答 *) Admitted.
+  intros.
+  induction l as [|A' l' IH].
+  - simpl. reflexivity.
+  - simpl. rewrite -> IH. reflexivity.
+Qed.
+
 
 Lemma app_length : forall (X:Type) (l1 l2 : list X),
   length (l1 ++ l2) = length l1 + length l2.
 Proof.
-  (* 请在此处解答 *) Admitted.
-(** [] *)
+  intros.
+  induction l1 as [| h1 t1 IH1].
+  - reflexivity.
+  - simpl. rewrite -> IH1. reflexivity.
+Qed.
 
 (** **** 练习：2 星, standard, optional (more_poly_exercises) 
 
@@ -446,13 +458,17 @@ Fixpoint combine {X Y : Type} (lx : list X) (ly : list Y)
     请在下面完成 [split] 的定义，确保它能够通过给定的单元测试。 *)
 
 Fixpoint split {X Y : Type} (l : list (X*Y))
-               : (list X) * (list Y)
-  (* 将本行替换成 ":= _你的_定义_ ." *). Admitted.
+               : (list X) * (list Y) :=
+  match l with
+  | [] => ([],[])
+  | (x,y) :: l' => (x :: (fst (split l')), y :: (snd (split l')))
+  end.
 
 Example test_split:
   split [(1,false);(2,false)] = ([1;2],[false;false]).
 Proof.
-(* 请在此处解答 *) Admitted.
+  simpl. reflexivity.
+Qed.
 (** [] *)
 
 (* ================================================================= *)
@@ -605,16 +621,18 @@ Proof. reflexivity. Qed.
     使用 [filter]（而非 [Fixpoint]）来编写 Coq 函数 [filter_even_gt7]，
     它接受一个自然数列表作为输入，返回一个只包含大于 [7] 的偶数的列表。 *)
 
-Definition filter_even_gt7 (l : list nat) : list nat
-  (* 将本行替换成 ":= _你的_定义_ ." *). Admitted.
+Definition filter_even_gt7 (l : list nat) : list nat :=
+  filter (fun a => (7<?a) && (evenb a)) l.
 
 Example test_filter_even_gt7_1 :
   filter_even_gt7 [1;2;6;9;10;3;12;8] = [10;12;8].
- (* 请在此处解答 *) Admitted.
+  simpl. reflexivity.
+Qed.
 
 Example test_filter_even_gt7_2 :
   filter_even_gt7 [5;2;6;19;129] = [].
- (* 请在此处解答 *) Admitted.
+  simpl. reflexivity.
+Qed.
 (** [] *)
 
 (** **** 练习：3 星, standard (partition) 
@@ -632,13 +650,14 @@ Example test_filter_even_gt7_2 :
 Definition partition {X : Type}
                      (test : X -> bool)
                      (l : list X)
-                   : list X * list X
-  (* 将本行替换成 ":= _你的_定义_ ." *). Admitted.
+                   : list X * list X :=
+  (filter test l, filter (fun x => negb (test x)) l).
+
 
 Example test_partition1: partition oddb [1;2;3;4;5] = ([1;3;5], [2;4]).
-(* 请在此处解答 *) Admitted.
+reflexivity. Qed.
 Example test_partition2: partition (fun x => false) [5;9;0] = ([], [5;9;0]).
-(* 请在此处解答 *) Admitted.
+reflexivity. Qed.
 (** [] *)
 
 (* ================================================================= *)
